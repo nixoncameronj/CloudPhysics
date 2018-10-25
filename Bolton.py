@@ -38,9 +38,9 @@ def sat_mixing_ratio(p,T):
 def mixing_ratio_line(p, w_s):
     '''calculates temperature from p, w_s
     '''
-    e_s = p*((w_s/eps)+1)
-    T = sat_vapor_temperature(e_s)
-    return T
+    e_s = (w_s*p)/(eps+w_s)
+    mix_ratio_line = sat_vapor_temperature(e_s)
+    return mix_ratio_line
 
 def RH(T, p, w):
     '''calculates relative humidity from T, p, w
@@ -49,32 +49,33 @@ def RH(T, p, w):
     RH = (w/w_s)*100
     return RH
 
-def T_LCL(T, RH):
+def T_LCL(T, p, w):
     '''calculates LCL temperature in Kelvin
     '''
-    T_LCL = (1/((1/(T+C_to_K-55))-(np.log(RH/100)/2840)))+55
+    rh = RH(T, p, w)
+    T_LCL = (1/((1/(T+C_to_K-55))-(np.log(rh/100)/2840)))+55
     return T_LCL
 
-# accept many pressures?
 def theta_dry(theta, p, p_0=1000.0):
     '''calculates theta dry from theta, p and reference pressure
     '''
-    theta_dry = theta*((p_0/(p-0))**k_dry)
-    return theta_dry + C_to_K
+    theta_dry = theta*((p/(p_0))**k_dry)
+    return theta_dry
 
 def pseudoeq_potential_T(T, p, w, p_0=1000.0):
     '''calculates theta ep from T, p, w and reference pressure
     '''
     rh = RH(T, p, w)
-    t_lcl = T_LCL(T, rh)
-    pseudoeq_potential_T = ((T+C_to_K)*((p_0/p)**(0.2854*(1-0.28*np.exp(-3*w)))))*(np.exp((3.376/t_lcl)-0.00254))*(w*(1+(w*0.81*np.exp(-3))))
+    t_lcl = T_LCL(T, p, w)
+    pseudoeq_potential_T = ((T+C_to_K)*((p_0/p)**(0.2854*(1-0.28*(w*10**-3)))))*np.exp(((3.376/t_lcl)-0.00254)*((w*10**3)*(1+(0.81*(w*10**-3)))))
     return pseudoeq_potential_T
 
 # probably not right
+# actually looks like it's right
 def theta_ep_field(T, p, p_0=1000.0):
     '''calculates moist adiabats
     '''
     w = sat_mixing_ratio(p, T)
-    theta_ep_field = pseudoeq_potential_T(T, p, w) + C_to_K
+    theta_ep_field = pseudoeq_potential_T(T, p, w, p_0)
     return theta_ep_field
 
