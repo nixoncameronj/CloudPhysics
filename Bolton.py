@@ -52,7 +52,7 @@ def RH(T, p, w):
 def T_LCL(T, RH):
     '''calculates LCL temperature in Kelvin
     '''
-    T_LCL = (1/((1/(T+C_to_K))-(np.log(RH/100)/2840)))+55
+    T_LCL = (1/((1/(T+C_to_K-55))-(np.log(RH/100)/2840)))+55
     return T_LCL
 
 # accept many pressures?
