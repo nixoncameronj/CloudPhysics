@@ -12,6 +12,27 @@ from mpl_toolkits.axisartist import Subplot
 from matplotlib.ticker import FuncFormatter, Formatter
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
+from readsoundings import parse_SPC
+
+sounding = '/home/cameron/Documents/Python/git_repos/CloudPhysics/april9sounding'
+sounding_data = parse_SPC(sounding)
+
+snd_p = sounding_data['p']
+good_p = (snd_p > 200) & (snd_p < 1000)
+
+snd_T = sounding_data['T']
+# all temperature values, deg. C, should be in this range.
+good_T = (snd_T > -100.0) & (snd_T < 60.0)
+x_snd_T = x_from_Tp(T, snd_p)
+y_snd_T = y_from_p(snd_p)
+
+snd_Td = sounding_data['Td']
+good_Td = (snd_Td > -100.0) & (snd_Td < 60.0)
+x_snd_Td = x_from_Tp(Td, snd_p)
+y_snd_Td = y_from_p(snd_p)
+
+
+
 
 # In[18]:
 
@@ -59,6 +80,18 @@ def from_thermo(T_C, p):
     x = x_from_Tp(T_C+C_to_K, p)
     return x, y
 
+def theta_e(T, p, p_0):
+    '''Calculates theta_e from T, p, p_0
+    '''
+    R_d = 287
+    c_l = 4218
+    c_p = 1882
+    w_s = Bolton.sat_mixing_ratio(p, T)
+    w_t = w_s
+    C_wd = c_pd + (w_t*c_l)
+    L_v = (3.139*(10**6)) - (c_l - c_p)*T
+    theta_e = T*((p/p_0)**(R_d/c_wd))*np.exp((L_v*w_s)/(c_wd*T))
+
 # values along the bottom and left edges
 p_bottom = 1050.0
 p_top = 150
@@ -94,13 +127,16 @@ x_mixing_ratios = [x_from_Tp(Bolton.mixing_ratio_line(p_all,mixing_ratios_i),p_a
 mesh_T, mesh_p = np.meshgrid(np.arange(-60.0, T_levels.max()-C_to_K+0.1, 0.1), p_all)
 theta_ep_mesh = Bolton.theta_ep_field(mesh_T, mesh_p)
 
+
+
 #
 
 
 # In[20]:
 
 
-skew_grid_helper = GridHelperCurveLinear((from_thermo, to_thermo))
+
+skew_grid_helper == GridHelperCurveLinear((from_thermo, to_thermo))
 fig = plt.figure()
 ax = Subplot(fig,1,1,1,grid_helper = skew_grid_helper)
 def format_coord(x, y):
@@ -127,6 +163,8 @@ moist_colors = ((0.6,0.9,0.7),)*n_moist
 ax.contour(x_from_Tp(mesh_T+C_to_K, mesh_p), y_from_p(mesh_p),
     theta_ep_mesh, theta_ep_levels, colors=moist_colors)
 
+ax.plot(x_snd_Td, y_snd,p, linewidth=2, color='g')
+ax.plot(x_snd_T, y_snd_p, linewidth=2, color='r')
 # your code for plotting theta_e (reversible)
 
 ax.axis((x_min, x_max, y_min, y_max))
