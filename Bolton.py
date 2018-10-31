@@ -70,12 +70,28 @@ def pseudoeq_potential_T(T, p, w, p_0=1000.0):
     pseudoeq_potential_T = ((T+C_to_K)*((p_0/p)**(0.2854*(1-0.28*(w*10**-3)))))*np.exp(((3.376/t_lcl)-0.00254)*((w*10**3)*(1+(0.81*(w*10**-3)))))
     return pseudoeq_potential_T
 
-# probably not right
-# actually looks like it's right
+def theta_e(T, p, p_0=1000.0):
+    '''calculates theta e from T, p, w and reference pressure
+    '''
+    R_d = 287.058
+    c_L = 4218
+    c_pd = 1005
+    w_s = sat_mixing_ratio(p,T)
+    c_wd = c_pd+(w_s*c_L)
+    L_v = 2.5*(10**6)
+    theta_e = (T+C_to_K)*((p_0/p)**(R_d/c_wd))*np.exp((L_v*w_s)/(c_wd*T))
+    return theta_e
+
 def theta_ep_field(T, p, p_0=1000.0):
     '''calculates moist adiabats
     '''
     w = sat_mixing_ratio(p, T)
     theta_ep_field = pseudoeq_potential_T(T, p, w, p_0)
     return theta_ep_field
+
+def theta_e_field(T, p, p_0=1000.0):
+    '''calculates moist adiabats
+    '''
+    theta_e_field = theta_e(T, p, p_0)
+    return theta_e_field
 
