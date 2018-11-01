@@ -65,26 +65,6 @@ def from_thermo(T_C, p):
     x = x_from_Tp(T_C+C_to_K, p)
     return x, y
 
-# def theta_e(T, p, p_0):
-#     '''Calculates theta_e from T, p, p_0
-#     '''
-#     R_d = 287.1
-#     c_l = 4218
-#     c_p = 1005
-#     w_s = Bolton.sat_mixing_ratio(p, T)
-#     w_t = w_s
-#     C_wd = c_pd + (w_s*c_l)
-#     L_v = (3.139*(10**6)) - (c_l - c_p)*T
-#     theta_e = T*((p/p_0)**(R_d/c_wd))*np.exp((L_v*w_s)/(c_wd*T))
-#     return theta_e
-
-# def theta_e_lines(T, p, p_0=1000.0):
-#     '''calculates theta-e lines
-#     '''
-#     w = sat_mixing_ratio(p, T)
-#     theta_e_lines = theta_e(T, p, w, p_0)
-#     return theta_e_lines
-
 # values along the bottom and left edges
 p_bottom = 1050.0
 p_top = 150
@@ -147,7 +127,7 @@ y_snd_Td = y_from_p(snd_p)
 
 %matplotlib inline
 skew_grid_helper = GridHelperCurveLinear((from_thermo, to_thermo))
-fig = plt.figure()
+fig = plt.figure(figsize=(12,9),dpi=150)
 ax = Subplot(fig,1,1,1,grid_helper = skew_grid_helper)
 def format_coord(x, y):
     T, p = to_thermo(x, y)
@@ -161,7 +141,6 @@ for yi in y_p_levels:
 for x_T in x_T_levels:
     ax.plot(x_T, y_all_p, color=(1.0, 0.5, 0.5))
 
-#doesn't work!
 for x_theta in x_thetas:
     ax.plot(x_theta, y_all_p, color=(1.0, 0.7, 0.7))
 
@@ -174,7 +153,6 @@ moist_colors = ((0.6,0.9,0.7),)*n_moist
 ax.contour(x_from_Tp(mesh_T+C_to_K, mesh_p), y_from_p(mesh_p),
     theta_ep_mesh, theta_ep_levels, colors=moist_colors)
 
-#doesn't work!
 theta_e_lines = len(theta_e_levels)
 moist_colors = ((0.6,0.9,0.7),)*theta_e_lines
 ax.contour(x_from_Tp(mesh_T+C_to_K, mesh_p), y_from_p(mesh_p),
@@ -185,6 +163,7 @@ ax.plot(x_snd_T, y_snd_p, linewidth=2, color='r')
 # your code for plotting theta_e (reversible)
 
 ax.axis((x_min, x_max, y_min, y_max))
+plt.title('ILX - 20150410 0000z')
 
 #ax.set_xlim(-40,0)
 
