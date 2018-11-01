@@ -79,7 +79,7 @@ def theta_e(T, p, p_0=1000.0):
     w_s = sat_mixing_ratio(p,T)
     c_wd = c_pd+(w_s*c_L)
     L_v = 2.5*(10**6)
-    theta_e = (T+C_to_K)*((p_0/p)**(R_d/c_wd))*np.exp((L_v*w_s)/(c_wd*T))
+    theta_e = (T+C_to_K)*((p_0/p)**(R_d/c_wd))*np.exp((L_v*w_s)/(c_wd*(T+C_to_K)))
     return theta_e
 
 def theta_ep_field(T, p, p_0=1000.0):
