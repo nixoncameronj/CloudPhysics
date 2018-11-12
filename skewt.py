@@ -14,8 +14,9 @@ from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinea
 
 from readsoundings import parse_SPC
 
-sounding = '/home/cjnix/cjnix/Documents/Python/git_repos/CloudPhysics/april9sounding'
-sounding_data = parse_SPC(sounding)
+if False:
+    sounding = '/home/cjnix/cjnix/Documents/Python/git_repos/CloudPhysics/april9sounding'
+    sounding_data = parse_SPC(sounding)
 
 
 
@@ -103,21 +104,22 @@ mesh_T, mesh_p = np.meshgrid(np.arange(-60.0, T_levels.max()-C_to_K+0.1, 0.1), p
 theta_ep_mesh = Bolton.theta_ep_field(mesh_T, mesh_p)
 theta_e_mesh = Bolton.theta_e_field(mesh_T, mesh_p)
 
-# sounding data
-snd_p = sounding_data['p']
-good_p = (snd_p > 200) & (snd_p < 1000)
-y_snd_p = y_from_p(snd_p)
+if False:
+    # sounding data
+    snd_p = sounding_data['p']
+    good_p = (snd_p > 200) & (snd_p < 1000)
+    y_snd_p = y_from_p(snd_p)
 
-snd_T = sounding_data['T']
-# all temperature values, deg. C, should be in this range.
-good_T = (snd_T > -100.0) & (snd_T < 60.0)
-x_snd_T = x_from_Tp(snd_T, snd_p)+C_to_K
-y_snd_T = y_from_p(snd_p)
+    snd_T = sounding_data['T']
+    # all temperature values, deg. C, should be in this range.
+    good_T = (snd_T > -100.0) & (snd_T < 60.0)
+    x_snd_T = x_from_Tp(snd_T, snd_p)+C_to_K
+    y_snd_T = y_from_p(snd_p)
 
-snd_Td = sounding_data['Td']
-good_Td = (snd_Td > -100.0) & (snd_Td < 60.0)
-x_snd_Td = x_from_Tp(snd_Td, snd_p)+C_to_K
-y_snd_Td = y_from_p(snd_p)
+    snd_Td = sounding_data['Td']
+    good_Td = (snd_Td > -100.0) & (snd_Td < 60.0)
+    x_snd_Td = x_from_Tp(snd_Td, snd_p)+C_to_K
+    y_snd_Td = y_from_p(snd_p)
 
 #
 
@@ -125,7 +127,7 @@ y_snd_Td = y_from_p(snd_p)
 # In[20]:
 
 
-%matplotlib inline
+#%matplotlib inline
 skew_grid_helper = GridHelperCurveLinear((from_thermo, to_thermo))
 fig = plt.figure(figsize=(12,9),dpi=150)
 ax = Subplot(fig,1,1,1,grid_helper = skew_grid_helper)
@@ -158,8 +160,9 @@ moist_colors = ((0.6,0.9,0.7),)*theta_e_lines
 ax.contour(x_from_Tp(mesh_T+C_to_K, mesh_p), y_from_p(mesh_p),
     theta_e_mesh, theta_e_levels, colors='lightblue')
 
-ax.plot(x_snd_Td, y_snd_p, linewidth=2, color='g')
-ax.plot(x_snd_T, y_snd_p, linewidth=2, color='r')
+if False:
+    ax.plot(x_snd_Td, y_snd_p, linewidth=2, color='g')
+    ax.plot(x_snd_T, y_snd_p, linewidth=2, color='r')
 # your code for plotting theta_e (reversible)
 
 ax.axis((x_min, x_max, y_min, y_max))
@@ -167,4 +170,5 @@ plt.title('ILX - 20150410 0000z')
 
 #ax.set_xlim(-40,0)
 
-plt.show()
+#plt.show()
+plt.savefig('nixon.png')
